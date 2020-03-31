@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from . import models
 
 
 def index(request):
@@ -10,9 +11,22 @@ def login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-        print(username, password)
-        return redirect('/index/')
-    return render(request, 'login1/1.html')
+        if username.strip() and password:
+            try:
+                user = models.User.objects.get(name=username)
+            except:
+                message = '用户名或密码有误。'
+                return render(request, 'login1/login.html', {'message': message})
+            if user.password == password:
+                return redirect('/login1/index/')
+            else:
+                message = '用户名或密码有误。'
+                return render(request, 'login1/login.html', {'message': message})
+        else:
+            message = '用户名或密码不能为空'
+            return render(request, 'login1/login.html', {'message': message})
+    else:
+        return render(request, 'login1/login.html')
 
 
 def register(request):
@@ -22,4 +36,4 @@ def register(request):
 
 def logout(request):
     pass
-    return redirect('/login/')
+    return redirect('/login1/')
