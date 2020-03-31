@@ -1,11 +1,17 @@
-body {
+html {
   height: 100%;
-  background-size: cover;
-  -webkit-background-size: cover;
-  background-position: center 0;
--o-background-size: cover;
-  background-image: url('../images/1.jpg');
 }
+
+body {
+  height: auto;
+  background: url(../images/1.jpg) no-repeat center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  color: rgba(255, 255, 255, .95)
+}
+
 .form-login {
   width: 100%;
   max-width: 330px;
