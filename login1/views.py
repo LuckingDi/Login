@@ -52,7 +52,31 @@ def register(request):
             email = register_form.cleaned_data.get('email')
             sex = register_form.cleaned_data.get('sex')
 
-    return render(request, 'login1/register.html')
+            if password1 != password2:
+                message = '两次密码不同，请重新输入！'
+                return render(request, 'login1/login.html', locals())
+            else:
+                same_name_user = models.User.objects.filter(name=username)
+                if same_name_user:
+                    message = '用户名已存在，请重新输入。'
+                    return render(request, 'login1/login.html', locals())
+                same_email_user = models.User.objects.filter(email=email)
+                if same_email_user:
+                    message = '邮箱已存在，请重新输入。'
+                    return render(request, 'login1/login.html', locals())
+
+                new_user = models.User()
+                new_user.name = username
+                new_user.password = password1
+                new_user.email = email
+                new_user.sex = sex
+                new_user.save()
+
+                return redirect('/login1/login/')
+        else:
+            return render(request, 'login1/login.html', locals())
+    register_form = forms.RegisterForm()
+    return render(request, 'login1/login.html', locals())
 
 
 def logout(request):
