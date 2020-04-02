@@ -8,8 +8,14 @@
 <dev style="width: 700px; height:600px;top: 50%;display: flex;align-items: center; margin: 0 auto">
     <img style="width: 600px; height:450px;" src="../../static/images/2.jpg">
 </dev>
-<dev style="width: 300px; height:25px;top: 50%;display: flex;align-items: center; margin: 0 auto">
-    <h3 style="color: red; font-size: xx-large">你是个假的吧</h3></dev>
-<h1>我是主页</h1>
+<dev style="width: 400px; height:50px;top: 50%;display: flex;align-items: center; margin: 0 auto">
+    <h1>我是{{ request.session.user_name }}！</h1><br>
+    <h3 style="color: red; font-size: xx-large">你是个假的吧?</h3>
+
+</dev>
+<dev style="width: 400px; height:50px;top: 50%;display: flex;align-items: center; margin: 0 auto">
+    <p><a href="/login1/logout/">登出</a></p>
+
+</dev>
 </body>
 </html>
