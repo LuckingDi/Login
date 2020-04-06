@@ -18,5 +18,5 @@ class RegisterForm(forms.Form):
     password2 = forms.CharField(label="确认密码", max_length=256, widget=forms.PasswordInput)
     email = forms.EmailField(label="邮箱地址")
     sex = forms.CharField(label='性别',)
-    captcha = CaptchaField(label="验证码")
+    # captcha = CaptchaField(label="验证码")
 

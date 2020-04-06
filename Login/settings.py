@@ -56,7 +56,8 @@ ROOT_URLCONF = 'Login.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates'),
+                 os.path.join(BASE_DIR, 'static')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -123,3 +124,10 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
   os.path.join(BASE_DIR, 'static')
 ]
+
+# 发送邮件
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'   # 指定发送邮件的后端模块
+EMAIL_HOST = 'smtp.aliyun.com'                                  # 发送方的smtp服务器地址
+EMAIL_PORT = 25                                                 # smtp服务器端口
+EMAIL_HOST_USER = 'hahada@aliyun.com'                           # 发送服务器的用户名
+EMAIL_HOST_PASSWORD = 'whd445210.'                              # 发送用户密码

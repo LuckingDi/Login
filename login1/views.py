@@ -39,53 +39,52 @@ def login(request):
 
 
 def register(request):
-    if request.session.get('is_login', None):
-        return redirect('/login1/login/')
+    if request.session.get('is_login', None):  # 不允许重复登录
+        return redirect('/login1/index/')
 
-    username = request.POST.get('username1', 'USERNAME')
-    password1 = request.POST.get('password1', 'PASSWORD1')
-    password2 = request.POST.get('password2', 'PASSWORD2')
-    email = request.POST.get('email', 'EMAIL')
-    sex = request.POST.get('sex', 'SEX')
+    if request.method == 'POST':
+        register_form = forms.RegisterForm(request.POST)
+        message = "请检查输入内容。。。"
 
-    # if request.method == 'POST':
-    #     register_form = forms.RegisterForm(request.POST)
-    #     message = "请检查输入内容。。。"
-    #     # if register_form.is_valid():
-    #     username = register_form.cleaned_data.get('username1')
-    #     password1 = register_form.cleaned_data.get('password1')
-    #     password2 = register_form.cleaned_data.get('password2')
-    #     email = register_form.cleaned_data.get('email')
-    #     sex = register_form.cleaned_data.get('sex')
+        # if register_form.is_valid():
+        # username = register_form.cleaned_data.get('username1')
+        # password1 = register_form.cleaned_data.get('password1')
+        # password2 = register_form.cleaned_data.get('password2')
+        # email = register_form.cleaned_data.get('email')
+        # sex = register_form.cleaned_data.get('sex')
 
-    if password1 != password2:
-        message = '两次密码不同，请重新输入！'
-        return render(request, 'login1/login.html', locals())
-    else:
-        same_name_user = models.User.objects.filter(name=username)
-        if same_name_user:
-            message = '用户名已存在，请重新输入。'
-            return render(request, 'login1/login.html', locals())
-        same_email_user = models.User.objects.filter(email=email)
-        if same_email_user:
-            message = '邮箱已存在，请重新输入。'
-            return render(request, 'login1/login.html', locals())
+        username = request.POST.get('username1', 'USERNAME')
+        password1 = request.POST.get('password1', 'PASSWORD1')
+        password2 = request.POST.get('password2', 'PASSWORD2')
+        email = request.POST.get('email', 'EMAIL')
+        sex = request.POST.get('sex', 'SEX')
+
+        if password1 != password2:
+            message = '两次密码不同，请重新输入！'
+            return render(request, 'login1/register.html', locals())
         else:
-            message = '邮箱为空，请重新输入。'
+            same_name_user = models.User.objects.filter(name=username)
+            if same_name_user:
+                message = '用户名已存在，请重新输入。'
+                return render(request, 'login1/register.html', locals())
+            same_email_user = models.User.objects.filter(email=email)
+            if same_email_user:
+                message = '邮箱已存在，请重新输入。'
+                return render(request, 'login1/register.html', locals())
+
+            new_user = models.User()
+            new_user.name = username
+            new_user.password = password1
+            new_user.email = email
+            new_user.sex = sex
+            new_user.save()
+            message = '注册成功！请登录。'
             return render(request, 'login1/login.html', locals())
-
-        new_user = models.User()
-        new_user.name = username
-        new_user.password = password1
-        new_user.email = email
-        new_user.sex = sex
-        new_user.save()
-
-        return redirect('/login1/login/')
-
     # else:
-    # return render(request, 'login1/login.html', locals())
-    return render(request, 'login1/login.html', locals())
+    #     return render(request, 'login1/register.html', locals())
+
+    else:
+        return render(request, 'login1/register.html', )
 
 
 def logout(request):
