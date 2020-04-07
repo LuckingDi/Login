@@ -67,19 +67,27 @@ def register(request):
             if same_name_user:
                 message = '用户名已存在，请重新输入。'
                 return render(request, 'login1/register.html', locals())
-            same_email_user = models.User.objects.filter(email=email)
-            if same_email_user:
-                message = '邮箱已存在，请重新输入。'
-                return render(request, 'login1/register.html', locals())
+            a = "@"
+            b = ".com"
+            if a in email and b in email:
+                same_email_user = models.User.objects.filter(email=email)
+                if same_email_user:
+                    message = '邮箱已存在，请重新输入。'
+                    return render(request, 'login1/register.html', locals())
 
-            new_user = models.User()
-            new_user.name = username
-            new_user.password = password1
-            new_user.email = email
-            new_user.sex = sex
-            new_user.save()
-            message = '注册成功！请登录。'
-            return render(request, 'login1/login.html', locals())
+                new_user = models.User()
+                new_user.name = username
+                new_user.password = password1
+                new_user.email = email
+                new_user.sex = sex
+                new_user.save()
+
+                code = make_
+                message = '注册成功！请登录。'
+                return render(request, 'login1/login.html', locals())
+            else:
+                message = '输入的邮箱格式有误，请重新输入'
+                return render(request, 'login1/register.html', locals())
     # else:
     #     return render(request, 'login1/register.html', locals())
 
