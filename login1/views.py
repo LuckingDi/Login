@@ -1,5 +1,29 @@
 from django.shortcuts import render, redirect
-from . import models, forms
+from django.conf import settings
+from . import models, forms, make_code_string
+from django.core.mail import EmailMultiAlternatives
+import datetime
+
+
+def send_email(code, email):
+
+    subject = "来自哈哈哒的注册确认邮件"            # 主题
+
+    text_content = '''
+                    感谢注册哈哈哒，这是哈哈哒站点.     
+                   如果你看到这条消息，说明你的邮箱服务器不提供HTML链接功能，请联系管理员！'''    # text文本内容
+
+    html_content = '''
+                    <p>感谢注册<a href="http://{}/login1/confirm/?code={}" target=blank>www.hahada.com</a>，
+                    这里是刘江的博客和教程站点，专注于Python、Django和机器学习技术的分享！</p>
+                    <p>请点击站点链接完成注册确认！</p>
+                    <p>此链接有效期为{}天！</p>
+                    '''.format('127.0.0.1:8000', code, settings.CONFIRM_DAYS)   # html格式内容
+
+    msg = EmailMultiAlternatives(subject, text_content, settings.EMAIL_HOST_USER, [email])
+    msg.attach_alternative(html_content, "text/html")
+    print(settings.EMAIL_HOST_USER + '-->' + email)
+    msg.send()
 
 
 def index(request):
@@ -22,6 +46,11 @@ def login(request):
             except:
                 message = '用户名或密码有误。'
                 return render(request, 'login1/login.html', locals())
+
+            if not user.has_confirmed:
+                message = '该用户尚未进行邮箱验证'
+                return render(request, 'login1/login.html', locals())
+
             if user.password == password:
                 request.session['is_login'] = True
                 request.session['user_id'] = user.id
@@ -82,7 +111,9 @@ def register(request):
                 new_user.sex = sex
                 new_user.save()
 
-                code = make_
+                code = make_code_string.make_code(new_user)
+                send_email(code, email)
+
                 message = '注册成功！请登录。'
                 return render(request, 'login1/login.html', locals())
             else:
@@ -95,6 +126,7 @@ def register(request):
         return render(request, 'login1/register.html', )
 
 
+# 登出
 def logout(request):
     if not request.session.get('is_login', None):
         return redirect('/login1/login/')
@@ -104,3 +136,28 @@ def logout(request):
     # del request.session['user_id']
     # del request.session['user_name']
     return redirect('/login1/login/')
+
+
+# 注册邮件确认
+def user_confirm(request):
+    code = request.GET.get('code', None)
+    message = ''
+    try:
+        confirm = models.confirmString.objects.get(code=code)
+    except:
+        message = "无效的验证码"
+        return render(request, 'login1/confirm.html', message)
+
+    c_time = confirm.c_time
+    now = datetime.datetime.now()
+    if now > c_time + datetime.timedelta(settings.CONFIRM_DAYS):    # 验证注册时间加上settings中有效时间是否小于现在的时间
+        confirm.user.delete()       # 删除此用户以及验证码
+        message = "您的邮件注册码已经过期，请重新注册。"
+        return render(request, 'login1/confirm.html', locals())
+    else:
+        confirm.user.has_confirmed = True       # 修改user表中has_confirmed的值
+        confirm.user.save()                     # 保存user表
+        confirm.delete()                        # 删除confirm表中的code的值
+        message ="尊敬的" + confirm.user.name + "，感谢确认，请使用账户登陆！"
+        return render(request, 'login1/confirm.html', locals())
+

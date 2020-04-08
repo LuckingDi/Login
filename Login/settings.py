@@ -125,9 +125,12 @@ STATICFILES_DIRS = [
   os.path.join(BASE_DIR, 'static')
 ]
 
-# 发送邮件
+# 发送邮件配置
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'   # 指定发送邮件的后端模块
 EMAIL_HOST = 'smtp.aliyun.com'                                  # 发送方的smtp服务器地址
 EMAIL_PORT = 25                                                 # smtp服务器端口
 EMAIL_HOST_USER = 'hahada@aliyun.com'                           # 发送服务器的用户名
 EMAIL_HOST_PASSWORD = 'whd445210.'                              # 发送用户密码
+
+# 注册有效天数
+CONFIRM_DAYS = 7

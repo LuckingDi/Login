@@ -207,32 +207,6 @@
             //调后台代码检查用户名是否已经被注册
 
 
-            if (flag) {
-                return false;
-            } else {//注册
-                spop({
-                    template: '<h4 class="spop-title">注册成功</h4>即将于3秒后返回登录',
-                    position: 'top-center',
-                    style: 'success',
-                    autoclose: 3000,
-                    onOpen: function () {
-                        var second = 2;
-                        var showPop = setInterval(function () {
-                            if (second == 0) {
-                                clearInterval(showPop);
-                            }
-                            $('.spop-body').html('<h4 class="spop-title">注册成功</h4>即将于' + second + '秒后返回登录');
-                            second--;
-                        }, 1000);
-                    },
-                    onClose: function () {
-                        goto_login();
-                    }
-                });
-                return false;
-            }
-        }
-
         //重置密码
         function forget() {
             var username = $("#forget-username").val(),

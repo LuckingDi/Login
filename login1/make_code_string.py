@@ -10,8 +10,8 @@ def hash_code(s, salt='Login'):
     return h.hexdigest()
 
 
-def make_code_string(user):
+def make_code(user):
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    code = hash_code(user.name, now)
+    code = make_code_string.hash_code(user.name, now)
     models.confirmString.objects.create(code=code, user=user)
     return code
